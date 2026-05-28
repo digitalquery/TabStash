@@ -88,6 +88,9 @@ body {
 .item-meta {
   font-size: 11px;
   color: #52525e;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .item-delete {
