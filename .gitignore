@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Internal tooling
+.kimi/
+
+# Old build artifacts
+read-later.zip
+read-later.xpi
+
+# Node modules (if any)
+node_modules/

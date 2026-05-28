@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tab Stash Options</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Tab Stash Settings</h1>
+    <div class="field">
+      <label for="shortcut">Keyboard Shortcut</label>
+      <input type="text" id="shortcut" placeholder="e.g. Ctrl+Shift+S">
+      <p class="hint">Format: Ctrl+Shift+Key, Alt+Key, etc. Changes take effect immediately.</p>
+    </div>
+    <button id="save">Save Shortcut</button>
+    <p id="status"></p>
+    <p class="note">You can also change shortcuts via <strong>about:addons</strong> → Extensions → gear → Manage Extension Shortcuts.</p>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>
