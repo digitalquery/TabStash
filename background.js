@@ -30,13 +30,15 @@ async function saveCurrentTab() {
   if (existingIndex >= 0) {
     items[existingIndex].savedAt = now;
     items[existingIndex].title = tab.title || items[existingIndex].title;
+    items[existingIndex].read = false;
     isDuplicate = true;
   } else {
     items.push({
       id: generateId(),
       url: tab.url,
       title: tab.title || tab.url,
-      savedAt: now
+      savedAt: now,
+      read: false
     });
   }
 

@@ -4,6 +4,7 @@ const filterEl = document.getElementById('filter');
 const exportBtn = document.getElementById('export-btn');
 const importBtn = document.getElementById('import-btn');
 const importFile = document.getElementById('import-file');
+const prefsBtn = document.getElementById('prefs-btn');
 
 let allItems = [];
 
@@ -17,6 +18,20 @@ function formatDate(iso) {
   return d.toLocaleString();
 }
 
+async function migrateItems() {
+  const items = await getItems();
+  let changed = false;
+  items.forEach(item => {
+    if (typeof item.read !== 'boolean') {
+      item.read = false;
+      changed = true;
+    }
+  });
+  if (changed) {
+    await browser.storage.local.set({ [STORAGE_KEY]: items });
+  }
+}
+
 function render(items) {
   listEl.innerHTML = '';
   if (!items.length) {
@@ -26,7 +41,7 @@ function render(items) {
 
   items.forEach(item => {
     const div = document.createElement('div');
-    div.className = 'item';
+    div.className = 'item ' + (item.read ? 'read' : 'unread');
 
     const title = document.createElement('a');
     title.className = 'item-title';
@@ -44,6 +59,21 @@ function render(items) {
     meta.className = 'item-meta';
     meta.textContent = formatDate(item.savedAt);
 
+    const readToggle = document.createElement('span');
+    readToggle.className = 'read-toggle ' + (item.read ? '' : 'unread');
+    readToggle.title = item.read ? 'Mark as unread' : 'Mark as read';
+    readToggle.addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const current = await getItems();
+      const target = current.find(i => i.id === item.id);
+      if (target) {
+        target.read = !target.read;
+        await browser.storage.local.set({ [STORAGE_KEY]: current });
+        refresh();
+      }
+    });
+
     const del = document.createElement('button');
     del.className = 'item-delete';
     del.textContent = '×';
@@ -59,12 +89,14 @@ function render(items) {
     div.appendChild(title);
     div.appendChild(url);
     div.appendChild(meta);
+    div.appendChild(readToggle);
     div.appendChild(del);
     listEl.appendChild(div);
   });
 }
 
 async function refresh() {
+  await migrateItems();
   allItems = await getItems();
   allItems.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
   applyFilter();
@@ -85,13 +117,17 @@ function applyFilter() {
 
 filterEl.addEventListener('input', applyFilter);
 
+prefsBtn.addEventListener('click', () => {
+  browser.runtime.openOptionsPage();
+});
+
 exportBtn.addEventListener('click', async () => {
   const items = await getItems();
   const blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `read-later-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.download = `tab-stash-backup-${new Date().toISOString().slice(0,10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
 });
@@ -117,12 +153,14 @@ importFile.addEventListener('change', async (e) => {
         const existing = map.get(item.url);
         existing.savedAt = item.savedAt;
         existing.title = item.title || existing.title;
+        existing.read = typeof item.read === 'boolean' ? item.read : existing.read;
       } else {
         map.set(item.url, {
           id: item.id || generateId(),
           url: item.url,
           title: item.title || item.url,
-          savedAt: item.savedAt
+          savedAt: item.savedAt,
+          read: typeof item.read === 'boolean' ? item.read : false
         });
       }
     });

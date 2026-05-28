@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Tab Stash",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Quickly save tabs to a sidebar panel and come back to them later.",
   "browser_specific_settings": {
     "gecko": {
