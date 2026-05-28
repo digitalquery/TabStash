@@ -120,15 +120,15 @@ body {
 }
 
 .read-toggle {
-  position: absolute;
-  top: 8px;
-  right: 34px;
-  width: 14px;
-  height: 14px;
+  display: inline-block;
+  vertical-align: middle;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   cursor: pointer;
   border: 2px solid #b1b1b3;
   background: #fff;
+  margin-left: 4px;
 }
 
 .read-toggle.unread {
@@ -137,7 +137,7 @@ body {
 }
 
 .read-toggle:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
 
 .empty {

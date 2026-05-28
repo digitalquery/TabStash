@@ -44,31 +44,40 @@ async function saveCurrentTab() {
 
   await saveItems(items);
 
-  // Flash badge
-  browser.browserAction.setBadgeText({ text: isDuplicate ? 'SAVED' : 'ADDED' });
-  browser.browserAction.setBadgeBackgroundColor({ color: isDuplicate ? '#f39c12' : '#27ae60' });
-  setTimeout(() => {
-    browser.browserAction.setBadgeText({ text: '' });
-  }, 2000);
+  // Flash badge for new items only
+  if (!isDuplicate) {
+    browser.browserAction.setBadgeText({ text: 'ADDED' });
+    browser.browserAction.setBadgeBackgroundColor({ color: '#27ae60' });
+    setTimeout(() => {
+      browser.browserAction.setBadgeText({ text: '' });
+    }, 2000);
+  }
 
   // Notify sidebar to refresh
   browser.runtime.sendMessage({ type: 'refresh' }).catch(() => {});
 }
 
-// Context menu
+// Context menus
 try {
   browser.contextMenus.create({
     id: 'tab-stash-save',
     title: 'Tab Stash',
     contexts: ['page', 'link', 'tab']
   });
+  browser.contextMenus.create({
+    id: 'tab-stash-prefs',
+    title: 'Preferences',
+    contexts: ['browser_action']
+  });
 } catch (e) {
-  // Menu may already exist on extension reload
+  // Menus may already exist on extension reload
 }
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === 'tab-stash-save') {
     saveCurrentTab();
+  } else if (info.menuItemId === 'tab-stash-prefs') {
+    browser.runtime.openOptionsPage();
   }
 });
 

@@ -55,10 +55,6 @@ function render(items) {
     url.textContent = item.url;
     url.title = item.url;
 
-    const meta = document.createElement('div');
-    meta.className = 'item-meta';
-    meta.textContent = formatDate(item.savedAt);
-
     const readToggle = document.createElement('span');
     readToggle.className = 'read-toggle ' + (item.read ? '' : 'unread');
     readToggle.title = item.read ? 'Mark as unread' : 'Mark as read';
@@ -73,6 +69,11 @@ function render(items) {
         refresh();
       }
     });
+
+    const meta = document.createElement('div');
+    meta.className = 'item-meta';
+    meta.appendChild(document.createTextNode(formatDate(item.savedAt) + ' '));
+    meta.appendChild(readToggle);
 
     const del = document.createElement('button');
     del.className = 'item-delete';
@@ -89,7 +90,6 @@ function render(items) {
     div.appendChild(title);
     div.appendChild(url);
     div.appendChild(meta);
-    div.appendChild(readToggle);
     div.appendChild(del);
     listEl.appendChild(div);
   });
