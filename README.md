@@ -13,11 +13,12 @@ Quickly save tabs to a sidebar panel and come back to them later.
   - Right-click context menu on any page, link, or tab
 - **Duplicate detection**: saving the same URL again updates its timestamp and flashes a badge.
 - **Sidebar panel** shows saved items sorted **latest first**.
+- **Read / unread toggle**: click the dot on any item to mark it as read or unread.
 - **Filter** items by page title or URL in real time.
 - **Delete** individual items.
 - **Export** your list to a dated JSON file.
-- **Import** a previously exported JSON file (merges by URL).
-- **Options page** to configure the keyboard shortcut.
+- **Import** a previously exported JSON file (merges by URL, preserves read status).
+- **Preferences** accessible via the gear icon in the sidebar or the options page.
 
 ## Install
 
@@ -73,7 +74,8 @@ Items are stored under the key `readLaterItems`:
     "id": "<uuid>",
     "url": "https://example.com",
     "title": "Example Page",
-    "savedAt": "2026-05-28T19:31:56.696Z"
+    "savedAt": "2026-05-28T19:31:56.696Z",
+    "read": false
   }
 ]
 ```
